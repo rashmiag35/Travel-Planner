@@ -15,6 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.travelplanner.presentation.ui.checklocation.LocationVM
@@ -26,8 +27,8 @@ import com.example.travelplanner.presentation.ui.dashboard.components.WeatherHea
 fun DashboardScreen(
     onSearchClick: () -> Unit,
     onItineraryClick: (String) -> Unit,
-    locationViewModel: LocationVM = viewModel(),
-    dashboardViewModel: DashboardVM = viewModel()
+    locationViewModel: LocationVM = hiltViewModel(),
+    dashboardViewModel: DashboardVM = hiltViewModel()
 ) {
     val context = LocalContext.current
     val weatherData by locationViewModel.weatherData.collectAsStateWithLifecycle()

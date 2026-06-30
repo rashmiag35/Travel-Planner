@@ -6,10 +6,13 @@ import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import javax.inject.Inject
 
-class SearchDestinationVM : ViewModel() {
+@HiltViewModel
+class SearchDestinationVM @Inject constructor() : ViewModel() {
     private val _predictions = MutableStateFlow<List<AutocompletePrediction>>(emptyList())
     val predictions: StateFlow<List<AutocompletePrediction>> = _predictions
 

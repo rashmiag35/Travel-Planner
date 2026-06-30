@@ -15,8 +15,8 @@ The primary objective is to provide travelers with a reliable, single-app experi
 ## 💡 Assumptions & Definitions
 
 ### 1. Prefetching vs. Syncing
-*   **Prefetching:** The proactive downloading of metadata (weather forecasts, place descriptions, and images) into a local **Room Database** when a user "Saves" a trip. This converts "online" data into "offline" assets.
-*   **Syncing:** The background process of ensuring saved itineraries are backed up to a cloud provider or kept consistent across multiple devices (requires account/auth).
+*   **Prefetching:** fetching places metadata into local Room database
+*   **Syncing:** The background process of keeping saved itineraries up-to-date.
 
 ### 2. Location Logic
 *   **Dashboard Weather:** Based on the device's current GPS location.
@@ -49,17 +49,17 @@ The primary objective is to provide travelers with a reliable, single-app experi
     *   **Interaction:** Users can tap attractions to see details or add them to a draft itinerary.
 
 ### 4. Itinerary View (Offline Ready)
-*   **Role:** The user's finalized travel plan.
+*   **Role:** The user's finalized travel plan for a specific destination.
 *   **Layout:**
-    *   **Timeline View:** A day-by-day list of scheduled places.
-    *   **Offline Toggle/Save Button:** Triggers the **Prefetching** engine to download all descriptions and images for the selected locations.
+    *   **Saved Places List:** Displays only the attractions explicitly added by the user.
+    *   **Offline Data:** Metadata for these places is loaded from the local **Room Database**.
     *   **Map Integration:** Pins for all selected locations.
 
 ### 5. Offline Experience
 *   **Role:** Reliability in dead zones.
 *   **Layout:**
     *   If no internet is detected, the app restricts navigation to "Saved Trips."
-    *   Loads all data (Weather + Place Details) directly from the **Room Database** instead of Retrofit services.
+    *   Loads all data (Place Details) directly from the **Room Database** instead of Retrofit services.
 
 ---
 

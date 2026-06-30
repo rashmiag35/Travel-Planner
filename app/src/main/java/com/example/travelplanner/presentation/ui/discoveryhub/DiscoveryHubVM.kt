@@ -2,6 +2,7 @@ package com.example.travelplanner.presentation.ui.discoveryhub
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.travelplanner.data.local.TravelDatabase
 import com.example.travelplanner.data.local.entity.Itinerary
@@ -11,13 +12,17 @@ import com.example.travelplanner.domain.model.ForecastResponse
 import com.example.travelplanner.domain.model.opentripmap.Geometry
 import com.example.travelplanner.domain.model.opentripmap.PlaceFeature
 import com.example.travelplanner.domain.model.opentripmap.PlaceProperties
+import com.example.travelplanner.util.NativeLib
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class DiscoveryHubVM(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class DiscoveryHubVM @Inject constructor(application: Application) : ViewModel() {
     private val itineraryDao = TravelDatabase.getDatabase(application).itineraryDao()
 
     private val _forecastData = MutableStateFlow<ForecastResponse?>(null)
@@ -32,14 +37,12 @@ class DiscoveryHubVM(application: Application) : AndroidViewModel(application) {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading
 
-    private val WEATHER_API_KEY = "fdedde0353db046c465911df1d2390ce" // todo
-
     fun loadCityData(lat: Double, lon: Double) {
         viewModelScope.launch {
             _isLoading.value = true
             try {
                 // Fetch Weather Forecast
-                val forecast = RetrofitClient.weatherApi.getForecast(lat, lon, WEATHER_API_KEY)
+                val forecast = RetrofitClient.weatherApi.getForecast(lat, lon, NativeLib.getWeatherApiKey())
                 _forecastData.value = forecast
 
                 // Fetch Nearby Places
@@ -49,7 +52,7 @@ class DiscoveryHubVM(application: Application) : AndroidViewModel(application) {
                         lon = lon,
                         radius = 1000,
                         limit = 30,
-                        apiKey = "5ae2e3f221c38a28845f05b6161a971c8cc6b70e95b8d91c174db085" // todo
+                        apiKey = NativeLib.getOpenTripMapApiKey()
                     )
                     _nearbyPlaces.value = placesResponse.map { resp ->
                         PlaceFeature(
@@ -108,7 +111,7 @@ class DiscoveryHubVM(application: Application) : AndroidViewModel(application) {
                     longitude = place.geometry.coordinates[0]
                 )
             )
-            
+
             // 3. Update local state for immediate UI feedback
             refreshSavedPlaces()
         }

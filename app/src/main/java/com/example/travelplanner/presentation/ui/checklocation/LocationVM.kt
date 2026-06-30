@@ -11,13 +11,16 @@ import androidx.lifecycle.viewModelScope
 import com.example.travelplanner.data.network.RetrofitClient
 import com.example.travelplanner.domain.model.WeatherResponse
 import com.example.travelplanner.domain.repo.PermissionUiState
+import com.example.travelplanner.util.NativeLib
+import dagger.hilt.android.lifecycle.HiltViewModel
 //import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-//@HiltViewModel
-class LocationVM: ViewModel() {
+@HiltViewModel
+class LocationVM @Inject constructor() : ViewModel() {
     private val _permissionState = MutableStateFlow<PermissionUiState>(PermissionUiState.Checking)
     val permissionState: StateFlow<PermissionUiState> = _permissionState
 
@@ -65,7 +68,7 @@ class LocationVM: ViewModel() {
     private fun fetchWeather(lat: Double, lon: Double) {
         viewModelScope.launch {
             try {
-                val response = RetrofitClient.weatherApi.getWeather(lat, lon, "fdedde0353db046c465911df1d2390ce")
+                val response = RetrofitClient.weatherApi.getWeather(lat, lon, NativeLib.getWeatherApiKey())
                 _weatherData.value = response
                 Log.d("TAG", "fetchWeather success: ${response.name}, Temp: ${response.main.temp}")
             } catch (e: Exception) {
