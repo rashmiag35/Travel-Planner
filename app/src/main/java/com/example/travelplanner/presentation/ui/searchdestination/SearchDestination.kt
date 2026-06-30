@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.google.android.libraries.places.api.Places
@@ -24,7 +25,7 @@ fun SearchDestinationScreen(
     onBackClick: () -> Unit,
     onPlaceSelected: (lat: Double, lon: Double, name: String) -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: SearchDestinationVM = viewModel()
+    viewModel: SearchDestinationVM = hiltViewModel()
 ) {
     val context = LocalContext.current
     val placesClient = remember {

@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
@@ -37,7 +38,7 @@ import com.example.travelplanner.domain.repo.PermissionUiState
 fun LocationPermissionScreen(
     modifier: Modifier = Modifier,
     onPermissionGranted: () -> Unit,
-    viewModel: LocationVM = viewModel()
+    viewModel: LocationVM = hiltViewModel()
 ) {
     val context = LocalContext.current
     val state by viewModel.permissionState.collectAsStateWithLifecycle()

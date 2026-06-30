@@ -11,6 +11,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -20,7 +21,7 @@ fun ItineraryDetailsScreen(
     tripName: String,
     onBackClick: () -> Unit,
     modifier: Modifier = Modifier,
-    viewModel: ItineraryDetailsVM = viewModel()
+    viewModel: ItineraryDetailsVM = hiltViewModel()
 ) {
     val places by viewModel.places.collectAsStateWithLifecycle()
 
