@@ -1,5 +1,6 @@
 package com.example.travelplanner.data.network
 
+import com.example.travelplanner.domain.model.ForecastResponse
 import com.example.travelplanner.domain.model.WeatherResponse
 import retrofit2.http.GET
 import retrofit2.http.Query
@@ -9,6 +10,15 @@ interface WeatherApiService {
     suspend fun getWeather(
         @Query("lat") lat: Double,
         @Query("lon") lon: Double,
-        @Query("appid") apiKey: String
+        @Query("appid") apiKey: String,
+        @Query("units") units: String = "metric"
     ): WeatherResponse
+
+    @GET("forecast")
+    suspend fun getForecast(
+        @Query("lat") lat: Double,
+        @Query("lon") lon: Double,
+        @Query("appid") apiKey: String,
+        @Query("units") units: String = "metric"
+    ): ForecastResponse
 }

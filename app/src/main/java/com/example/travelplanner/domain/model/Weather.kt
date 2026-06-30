@@ -63,3 +63,23 @@ data class Sys(
     val sunrise: Long,
     val sunset: Long
 )
+
+data class ForecastResponse(
+    val list: List<ForecastItem>,
+    val city: CityInfo
+)
+
+data class ForecastItem(
+    val dt: Long,
+    val main: Main,
+    val weather: List<WeatherInfo>,
+    @SerializedName("dt_txt") val dtTxt: String
+)
+
+data class CityInfo(
+    val id: Int,
+    val name: String,
+    val coord: Coord,
+    val country: String,
+    val timezone: Int
+)

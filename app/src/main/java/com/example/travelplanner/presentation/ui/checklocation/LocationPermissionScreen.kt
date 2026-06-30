@@ -13,6 +13,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -23,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
@@ -52,7 +54,7 @@ fun LocationPermissionScreen(
         val isGranted = permissions.any {
             ContextCompat.checkSelfPermission(context, it) == PackageManager.PERMISSION_GRANTED
         }
-        // Find activity reference to check rationale status
+
         val activity = context as? ComponentActivity
         val shouldShowRationale = activity?.shouldShowRequestPermissionRationale(
             Manifest.permission.ACCESS_FINE_LOCATION
@@ -122,5 +124,13 @@ fun LocationPermissionScreen(
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun LocationPermissionScreenPreview() {
+    MaterialTheme {
+        LocationPermissionScreen(onPermissionGranted = {})
     }
 }

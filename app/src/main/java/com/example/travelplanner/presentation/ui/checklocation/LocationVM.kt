@@ -1,6 +1,11 @@
 package com.example.travelplanner.presentation.ui.checklocation
 
+import android.Manifest
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.LocationManager
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.travelplanner.data.network.RetrofitClient
@@ -27,6 +32,27 @@ class LocationVM: ViewModel() {
             isGranted -> PermissionUiState.Granted
             shouldShowRationale -> PermissionUiState.ShowRationale
             else -> PermissionUiState.DeniedPermanently
+        }
+    }
+
+    fun loadCurrentLocationWeather(context: Context) {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            
+            val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+            val providers = locationManager.getProviders(true)
+            var bestLocation: android.location.Location? = null
+            
+            for (provider in providers) {
+                val loc = locationManager.getLastKnownLocation(provider)
+                if (bestLocation == null || (loc != null && loc.accuracy < bestLocation.accuracy)) {
+                    bestLocation = loc
+                }
+            }
+            
+            bestLocation?.let {
+                updateLocation(it.latitude, it.longitude)
+            }
         }
     }
 

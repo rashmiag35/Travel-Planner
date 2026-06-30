@@ -1,8 +1,7 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.compose.compiler)
-//    alias(libs.plugins.dagger.hilt)
-//    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -45,10 +44,16 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
 
     implementation(libs.retrofit)
     implementation(libs.retrofit.gson)
     implementation(libs.okhttp.logging)
+    implementation(libs.google.places)
+
+    implementation(libs.androidx.room.runtime)
+    implementation(libs.androidx.room.ktx)
+    ksp(libs.androidx.room.compiler)
 
 //    implementation(libs.dagger.hilt.android)
 //    ksp(libs.dagger.hilt.compiler)
