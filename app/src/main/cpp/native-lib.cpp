@@ -15,6 +15,6 @@ Java_com_example_travelplanner_util_NativeLib_getWeatherApiKey(JNIEnv* env, jobj
 
 extern "C" JNIEXPORT jstring JNICALL
 Java_com_example_travelplanner_util_NativeLib_getOpenTripMapApiKey(JNIEnv* env, jobject /* this */) {
-    std::string api_key = "5eb2ff22a101f251c51a9677e313791005a3962638363715102029";
+    std::string api_key = "5ae2e3f221c38a28845f05b6161a971c8cc6b70e95b8d91c174db085";
     return env->NewStringUTF(api_key.c_str());
 }

@@ -1,5 +1,6 @@
 package com.example.travelplanner.presentation.ui.searchdestination
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -11,6 +12,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -38,6 +40,7 @@ fun SearchDestinationScreen(
     var query by remember { mutableStateOf("") }
     val predictions by viewModel.predictions.collectAsStateWithLifecycle()
     val selectedPlace by viewModel.selectedPlace.collectAsStateWithLifecycle()
+    val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
 
     LaunchedEffect(selectedPlace) {
         selectedPlace?.let { place ->
@@ -49,66 +52,82 @@ fun SearchDestinationScreen(
         }
     }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Search Destination") },
-                navigationIcon = {
-                    IconButton(onClick = onBackClick) {
-                        Icon(
-                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+    Box(modifier = Modifier.fillMaxSize()) {
+        Scaffold(
+            topBar = {
+                TopAppBar(
+                    title = { Text("Search Destination") },
+                    navigationIcon = {
+                        IconButton(onClick = onBackClick) {
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back"
+                            )
+                        }
+                    }
+                )
+            }
+        ) { innerPadding ->
+            Column(
+                modifier = modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(16.dp)
+            ) {
+                OutlinedTextField(
+                    value = query,
+                    onValueChange = {
+                        query = it
+                        placesClient?.let { client ->
+                            viewModel.getPredictions(it, client)
+                        }
+                    },
+                    label = { Text("Enter city or place") },
+                    modifier = Modifier.fillMaxWidth(),
+                    trailingIcon = {
+                        if (query.isNotEmpty()) {
+                            IconButton(onClick = {
+                                query = ""
+                                placesClient?.let { client ->
+                                    viewModel.getPredictions("", client)
+                                }
+                            }) {
+                                Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear")
+                            }
+                        }
+                    },
+                    singleLine = true
+                )
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                LazyColumn {
+                    items(predictions) { prediction ->
+                        ListItem(
+                            headlineContent = { Text(prediction.getPrimaryText(null).toString()) },
+                            supportingContent = { Text(prediction.getSecondaryText(null).toString()) },
+                            modifier = Modifier.clickable {
+                                placesClient?.let { client ->
+                                    viewModel.onPredictionSelected(prediction, client)
+                                }
+                            }
                         )
+                        HorizontalDivider()
                     }
                 }
-            )
-        }
-    ) { innerPadding ->
-        Column(
-            modifier = modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(16.dp)
-        ) {
-            OutlinedTextField(
-                value = query,
-                onValueChange = {
-                    query = it
-                    placesClient?.let { client ->
-                        viewModel.getPredictions(it, client)
-                    }
-                },
-                label = { Text("Enter city or place") },
-                modifier = Modifier.fillMaxWidth(),
-                trailingIcon = {
-                    if (query.isNotEmpty()) {
-                        IconButton(onClick = {
-                            query = ""
-                            placesClient?.let { client ->
-                                viewModel.getPredictions("", client)
-                            }
-                        }) {
-                            Icon(imageVector = Icons.Default.Clear, contentDescription = "Clear")
-                        }
-                    }
-                },
-                singleLine = true
-            )
-
-            Spacer(modifier = Modifier.height(16.dp))
-
-            LazyColumn {
-                items(predictions) { prediction ->
-                    ListItem(
-                        headlineContent = { Text(prediction.getPrimaryText(null).toString()) },
-                        supportingContent = { Text(prediction.getSecondaryText(null).toString()) },
-                        modifier = Modifier.clickable {
-                            placesClient?.let { client ->
-                                viewModel.onPredictionSelected(prediction, client)
-                            }
-                        }
+            }
+            if (isLoading) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(Color.Black.copy(alpha = 0.5f))
+                        .clickable(enabled = false) { },  // Blocks touches
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator(
+                        modifier = Modifier.size(50.dp),
+                        color = MaterialTheme.colorScheme.primary
                     )
-                    HorizontalDivider()
                 }
             }
         }

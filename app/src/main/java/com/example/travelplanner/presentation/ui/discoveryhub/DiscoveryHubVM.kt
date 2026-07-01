@@ -68,6 +68,7 @@ class DiscoveryHubVM @Inject constructor(application: Application) : ViewModel()
                         )
                     }
                 } catch (e: Exception) {
+                    print("API exception:: $e")
                     _nearbyPlaces.value = getMockPlaces()
                 }
 

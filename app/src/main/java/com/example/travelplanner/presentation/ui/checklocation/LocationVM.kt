@@ -40,23 +40,27 @@ class LocationVM @Inject constructor() : ViewModel() {
 
     fun loadCurrentLocationWeather(context: Context) {
         if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-            
+            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
+        ) {
+
             val locationManager = context.getSystemService(Context.LOCATION_SERVICE) as LocationManager
             val providers = locationManager.getProviders(true)
             var bestLocation: android.location.Location? = null
-            
+
             for (provider in providers) {
                 val loc = locationManager.getLastKnownLocation(provider)
+                print("Location: $loc")
                 if (bestLocation == null || (loc != null && loc.accuracy < bestLocation.accuracy)) {
                     bestLocation = loc
+                    print("Location: $bestLocation")
                 }
             }
-            
+
             bestLocation?.let {
                 updateLocation(it.latitude, it.longitude)
             }
-        }
+        } else
+            print("Location permission not given")
     }
 
     fun updateLocation(latitude: Double, longitude: Double) {

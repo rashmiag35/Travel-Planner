@@ -20,6 +20,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 fun ItineraryDetailsScreen(
     tripName: String,
     onBackClick: () -> Unit,
+    onTripClick: (lat: Double, lon: Double, name: String) -> Unit,
     modifier: Modifier = Modifier,
     viewModel: ItineraryDetailsVM = hiltViewModel()
 ) {
@@ -55,7 +56,8 @@ fun ItineraryDetailsScreen(
                     items(places) { place ->
                         Card(
                             modifier = Modifier.fillMaxWidth(),
-                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)
+                            colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant),
+                            onClick = { onTripClick(place.latitude, place.longitude, place.name) }
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
                                 Text(text = place.name, style = MaterialTheme.typography.titleMedium)

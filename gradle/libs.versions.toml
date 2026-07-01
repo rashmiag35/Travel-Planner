@@ -1,5 +1,6 @@
 [versions]
 agp = "9.1.1"
+android = "11.25.0"
 kotlin = "2.0.21"
 coreKtx = "1.19.0"
 junit = "4.13.2"
@@ -16,8 +17,11 @@ room = "2.8.4"
 daggerHilt = "2.60"
 kspVersion = "2.0.21-1.0.28"
 hiltNavigationCompose = "1.3.0"
+maps = "8.3.0"
+playServicesMaps = "19.0.1"
 
 [libraries]
+android = { module = "com.mapbox.maps:android", version.ref = "android" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -44,6 +48,8 @@ androidx-room-compiler = { group = "androidx.room", name = "room-compiler", vers
 dagger-hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "daggerHilt" }
 dagger-hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "daggerHilt" }
 androidx-hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+maps-compose = { group = "com.google.maps.android", name = "maps-compose", version.ref = "maps" }
+play-services-maps = { group = "com.google.android.gms", name = "play-services-maps", version.ref = "playServicesMaps" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

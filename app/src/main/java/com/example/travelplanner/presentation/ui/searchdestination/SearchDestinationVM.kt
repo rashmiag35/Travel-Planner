@@ -19,6 +19,9 @@ class SearchDestinationVM @Inject constructor() : ViewModel() {
     private val _selectedPlace = MutableStateFlow<Place?>(null)
     val selectedPlace: StateFlow<Place?> = _selectedPlace
 
+    private val _isLoading = MutableStateFlow(false)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     fun getPredictions(query: String, placesClient: PlacesClient) {
         if (query.isEmpty()) {
             _predictions.value = emptyList()
@@ -39,6 +42,7 @@ class SearchDestinationVM @Inject constructor() : ViewModel() {
     }
 
     fun onPredictionSelected(prediction: AutocompletePrediction, placesClient: PlacesClient) {
+        _isLoading.value = true
         val placeFields = listOf(Place.Field.ID, Place.Field.DISPLAY_NAME, Place.Field.LOCATION)
         val request = FetchPlaceRequest.newInstance(prediction.placeId, placeFields)
 
@@ -48,10 +52,13 @@ class SearchDestinationVM @Inject constructor() : ViewModel() {
             }
             .addOnFailureListener { exception ->
                 exception.printStackTrace()
+                _isLoading.value = false
             }
     }
 
     fun clearSelectedPlace() {
+        _isLoading.value = false
         _selectedPlace.value = null
+        _predictions.value = emptyList()
     }
 }

@@ -19,7 +19,10 @@ import com.example.travelplanner.presentation.ui.searchdestination.SearchDestina
 import com.modivmedia.mydemoapp.presentation.ui.theme.TravelPlanner
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
+import com.example.travelplanner.presentation.ui.maps.MapsScreen
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +65,9 @@ class MainActivity : ComponentActivity() {
                             ItineraryDetailsScreen(
                                 tripName = tripName,
                                 onBackClick = { navController.popBackStack() },
+                                onTripClick = { lat, lon, name ->
+                                    navController.navigate("maps/$lat/$lon/$name")
+                                },
                                 modifier = Modifier.fillMaxSize()
                             )
                         }
@@ -85,7 +91,26 @@ class MainActivity : ComponentActivity() {
                             val lat = backStackEntry.arguments?.getString("lat")?.toDoubleOrNull() ?: 0.0
                             val lon = backStackEntry.arguments?.getString("lon")?.toDoubleOrNull() ?: 0.0
                             val name = backStackEntry.arguments?.getString("name") ?: ""
-                            DiscoveryHubScreen(lat = lat, lon = lon, name = name, modifier = Modifier.fillMaxSize())
+                            DiscoveryHubScreen(
+                                lat = lat, lon = lon, name = name, modifier = Modifier.fillMaxSize(),
+                                onBackClick = { navController.popBackStack() })
+                        }
+                        composable(
+                            "maps/{lat}/{lon}/{name}",
+                            arguments = listOf(
+                                navArgument("lat") { type = NavType.StringType },
+                                navArgument("lon") { type = NavType.StringType },
+                                navArgument("name") { type = NavType.StringType }
+                            )) { backStackEntry ->
+                            val lat = backStackEntry.arguments?.getString("lat")?.toDoubleOrNull() ?: 0.0
+                            val lon = backStackEntry.arguments?.getString("lon")?.toDoubleOrNull() ?: 0.0
+                            val name = backStackEntry.arguments?.getString("name") ?: ""
+                            MapsScreen(
+                                lat = lat,
+                                lon = lon,
+                                name = name,
+                                modifier = Modifier.fillMaxSize(),
+                                onBackClick = { navController.popBackStack() })
                         }
                     }
                 }

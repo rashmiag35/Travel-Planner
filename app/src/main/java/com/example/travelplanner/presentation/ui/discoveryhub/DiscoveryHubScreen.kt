@@ -3,6 +3,8 @@ package com.example.travelplanner.presentation.ui.discoveryhub
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,19 +19,21 @@ import com.example.travelplanner.presentation.ui.discoveryhub.components.Attract
 import com.example.travelplanner.presentation.ui.discoveryhub.components.ForecastRow
 import kotlinx.coroutines.launch
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DiscoveryHubScreen(
     lat: Double,
     lon: Double,
     name: String,
     modifier: Modifier = Modifier,
-    viewModel: DiscoveryHubVM = hiltViewModel()
+    viewModel: DiscoveryHubVM = hiltViewModel(),
+    onBackClick: () -> Unit = {}
 ) {
     val forecastData by viewModel.forecastData.collectAsStateWithLifecycle()
     val nearbyPlaces by viewModel.nearbyPlaces.collectAsStateWithLifecycle()
     val savedPlaceIds by viewModel.savedPlaceIds.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
-    
+
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
 
@@ -38,6 +42,16 @@ fun DiscoveryHubScreen(
     }
 
     Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(text = "") },
+                navigationIcon = {
+                    IconButton(onClick = onBackClick) {
+                        Icon(imageVector = Icons.Default.ArrowBack, contentDescription = "Back")
+                    }
+                }
+            )
+        },
         snackbarHost = { SnackbarHost(hostState = snackbarHostState) }
     ) { innerPadding ->
         Column(
@@ -79,21 +93,32 @@ fun DiscoveryHubScreen(
                     CircularProgressIndicator()
                 }
             } else {
-                LazyColumn(modifier = Modifier.weight(1f)) {
-                    items(nearbyPlaces) { place ->
-                        val placeName = if (place.properties.name.isEmpty()) "Interesting Place" else place.properties.name
-                        val isAlreadySaved = savedPlaceIds.contains(place.properties.xid)
+                if (nearbyPlaces.isEmpty()) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "No nearby attractions found.")
+                    }
+                } else {
+                    LazyColumn(modifier = Modifier.weight(1f)) {
+                        items(nearbyPlaces) { place ->
+                            val placeName = place.properties.name.ifEmpty { "Interesting Place" }
+                            val isAlreadySaved = savedPlaceIds.contains(place.properties.xid)
 
-                        AttractionItem(
-                            place = place.copy(properties = place.properties.copy(name = placeName)),
-                            isAdded = isAlreadySaved,
-                            onAddClick = {
-                                viewModel.savePlaceToItinerary(name, place.copy(properties = place.properties.copy(name = placeName)))
-                                scope.launch {
-                                    snackbarHostState.showSnackbar("Added $placeName to your trip!")
+                            AttractionItem(
+                                place = place.copy(properties = place.properties.copy(name = placeName)),
+                                isAdded = isAlreadySaved,
+                                onAddClick = {
+                                    viewModel.savePlaceToItinerary(name, place.copy(properties = place.properties.copy(name = placeName)))
+                                    scope.launch {
+                                        snackbarHostState.showSnackbar("Added $placeName to your trip!")
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
             }

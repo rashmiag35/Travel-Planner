@@ -21,7 +21,7 @@ data class SavedPlace(
     @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
     val itineraryId: Long,
-    val xid: String, // From OpenTripMap
+    val xid: String,
     val name: String,
     val kinds: String? = null,
     val latitude: Double,
